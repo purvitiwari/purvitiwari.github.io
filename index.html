@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+		<head>
+            <title>Piano Tiles</title>
+        	<script src="js/jquery.js"></script>
+			<script src="js/keys1.js"></script>
+			<script src="js/keys2.js"></script> 
+			<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+		</head>
+		<body>
+			<script>
+				var score = 0;
+                var CANVAS_WIDTH = 480;
+				var CANVAS_HEIGHT = 600;
+				var enemy =
+				{
+					color: "#000",
+					x:0,
+					y:2*CANVAS_HEIGHT/3,
+					width:CANVAS_WIDTH/4,
+					height:CANVAS_HEIGHT/3,
+					speed:10,
+					draw:function()
+					{
+						canvas.fillStyle = this.color;
+						canvas.fillRect(this.x, this.y, this.width, this.height);
+					},
+					update:	function()
+					{
+                        this.x = Math.floor((Math.random()*4))*120;    
+					}
+				}
+                
+                var enemy1 =
+				{
+					color: "#000",
+					x:0,
+					y:CANVAS_HEIGHT/3,
+					width:CANVAS_WIDTH/4,
+					height:CANVAS_HEIGHT/3,
+					speed:10,
+					draw:function()
+					{
+						canvas.fillStyle = this.color;
+						canvas.fillRect(this.x, this.y, this.width, this.height);
+					},
+					update:	function()
+					{
+                        this.x = Math.floor((Math.random()*4))*120;
+					}
+				}
+                
+                var enemy2 =
+				{
+					color: "#000",
+					x:0,
+					y:0,
+					width:CANVAS_WIDTH/4,
+					height:CANVAS_HEIGHT/3,
+					speed:10,
+					draw:function()
+					{
+						canvas.fillStyle = this.color;
+						canvas.fillRect(this.x, this.y, this.width, this.height);
+					},
+					update:	function()
+					{
+                        this.x = Math.floor((Math.random()*4))*120;
+					}
+				}
+				
+				
+				var canvasElement = $("<canvas width='" + CANVAS_WIDTH + "' height='" + CANVAS_HEIGHT + " '' id='canvas'></canvas>");
+				var canvas = canvasElement.get(0).getContext("2d");
+				canvasElement.appendTo('body');
+				var base=0;
+				var FPS = 10;
+				var threading=setInterval(function() {
+					base++;
+					draw();
+					update();
+				}, 1000/FPS)
+				
+                
+				
+				
+				function update()
+				{
+					if (keydown.h) {
+                        if(enemy.x==0){
+                            score++;
+                            enemy.x = enemy1.x;
+                            enemy1.x = enemy2.x;
+                            enemy2.update();
+                           
+                            
+						}
+                        else
+                        {
+                            clearInterval(threading);
+                            alert("Wrong tile. Press F5 for New Game");
+                            
+                        }
+                    }
+                        
+					if (keydown.j) {
+						if(enemy.x==CANVAS_WIDTH/4){
+                            score++;
+                            enemy.x = enemy1.x;
+                            enemy1.x = enemy2.x;
+                            enemy2.update();
+                            draw();
+                            
+						}
+                        else
+                        {
+                            clearInterval(threading);
+                            alert("Wrong tile. Press F5 for New Game");
+                        }
+					}
+                    
+					if (keydown.k) {
+						if(enemy.x==2*CANVAS_WIDTH/4){
+                            score++;
+                            enemy.x = enemy1.x;
+                            enemy1.x = enemy2.x;
+                            enemy2.update();
+                            draw();
+                            
+						}
+                        else
+                        {
+                            clearInterval(threading);
+                            alert("Wrong tile. Press F5 for New Game");
+                        }
+					}
+
+					if (keydown.l) {
+						if(enemy.x==3*CANVAS_WIDTH/4){
+                            score++;
+                            enemy.x = enemy1.x;
+                            enemy1.x = enemy2.x;
+                            enemy2.update();
+                            draw();
+                            
+						}
+                        else
+                        {
+                            clearInterval(threading);
+                            alert("Wrong tile. Press F5 for New Game");
+                        }
+					}
+					time += 1/FPS;
+					document.getElementById("score").innerHTML=score;
+					document.getElementById("time").innerHTML=time.toPrecision(4);
+				}
+				var time = 0;
+
+				function draw(){
+					canvas.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    draw_lines();
+					enemy.draw();
+                    enemy1.draw();
+					enemy2.draw();
+				}
+				
+                function draw_lines(){
+                    
+                    canvas.beginPath();
+                    canvas.moveTo(CANVAS_WIDTH/4,0);
+                    canvas.lineTo(CANVAS_WIDTH/4,CANVAS_HEIGHT);
+                    canvas.moveTo(2*CANVAS_WIDTH/4,0);
+                    canvas.lineTo(2*CANVAS_WIDTH/4,CANVAS_HEIGHT);
+                    canvas.moveTo(3*CANVAS_WIDTH/4,0);
+                    canvas.lineTo(3*CANVAS_WIDTH/4,CANVAS_HEIGHT);
+                    canvas.moveTo(4*CANVAS_WIDTH/4,0);
+                    canvas.lineTo(4*CANVAS_WIDTH/4,CANVAS_HEIGHT);
+                    canvas.moveTo(0,CANVAS_HEIGHT/3);
+                    canvas.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT/3);
+                    canvas.moveTo(0,2*CANVAS_HEIGHT/3);
+                    canvas.lineTo(CANVAS_WIDTH, 2*CANVAS_HEIGHT/3);
+                    canvas.moveTo(0,3*CANVAS_HEIGHT/3);
+                    canvas.lineTo(CANVAS_WIDTH, 3*CANVAS_HEIGHT/3);
+                    canvas.stroke();
+                }
+			
+			</script>
+			
+			<div id='demo'>
+				<h2>Score:&nbsp; </h2><h2 id="score"></h2> <br><br>
+				<h2>Time:&nbsp; </h2><h2 id="time"></h2> <br><br>
+                <h2>Instructions : </h2><br>
+                <h2 color="#fff", font-size="20px;">
+                    Use "H", "J", "K", "L" on the keyboard <br>for respective columns from left to right<br>where black tile belongs.
+                </h2>
+                </div>
+			</div><br>
+            <!-- <div class="row">
+				<center>
+                        <input id="count" placeholder="Enter number of seconds" type="text">
+						<button onclick = update()>Start Game</button>
+				<center>
+            </div> -->
+			<a id="next" href="level2.html"></a>
+		</body>			
+</html>
