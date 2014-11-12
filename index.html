@@ -8,7 +8,12 @@
 			<link rel="stylesheet" type="text/css" href="css/style.css" /> 
 		</head>
 		<body>
+            
 			<script>
+// time up and wrong both then cancel time up
+// stopwatch
+                var threading;
+                var flag=0;
 				var score = 0;
                 var CANVAS_WIDTH = 480;
 				var CANVAS_HEIGHT = 600;
@@ -16,10 +21,10 @@
 				{
 					color: "#000",
 					x:0,
-					y:2*CANVAS_HEIGHT/3,
+                    y:2*CANVAS_HEIGHT/3,
 					width:CANVAS_WIDTH/4,
 					height:CANVAS_HEIGHT/3,
-					speed:10,
+					//speed:10,
 					draw:function()
 					{
 						canvas.fillStyle = this.color;
@@ -30,15 +35,14 @@
                         this.x = Math.floor((Math.random()*4))*120;    
 					}
 				}
-                
                 var enemy1 =
-				{
-					color: "#000",
+                {
+                    color: "#000",
 					x:0,
-					y:CANVAS_HEIGHT/3,
+                    y:1*CANVAS_HEIGHT/3,
 					width:CANVAS_WIDTH/4,
 					height:CANVAS_HEIGHT/3,
-					speed:10,
+					//speed:10,
 					draw:function()
 					{
 						canvas.fillStyle = this.color;
@@ -46,18 +50,19 @@
 					},
 					update:	function()
 					{
-                        this.x = Math.floor((Math.random()*4))*120;
+                        this.x = Math.floor((Math.random()*4))*120;    
 					}
-				}
+                }
+				
                 
                 var enemy2 =
 				{
 					color: "#000",
 					x:0,
-					y:0,
+                    y:0,
 					width:CANVAS_WIDTH/4,
 					height:CANVAS_HEIGHT/3,
-					speed:10,
+					//speed:10,
 					draw:function()
 					{
 						canvas.fillStyle = this.color;
@@ -65,7 +70,7 @@
 					},
 					update:	function()
 					{
-                        this.x = Math.floor((Math.random()*4))*120;
+                        this.x = Math.floor((Math.random()*4))*120;    
 					}
 				}
 				
@@ -73,88 +78,63 @@
 				var canvasElement = $("<canvas width='" + CANVAS_WIDTH + "' height='" + CANVAS_HEIGHT + " '' id='canvas'></canvas>");
 				var canvas = canvasElement.get(0).getContext("2d");
 				canvasElement.appendTo('body');
-				var base=0;
-				var FPS = 10;
-				var threading=setInterval(function() {
-					base++;
-					draw();
-					update();
-				}, 1000/FPS)
-				
+				draw();
                 
-				
-				
-				function update()
+                function setTime()
+                {
+                    var time = 0;
+                    
+                    threading=setInterval(function() {
+                    time += 0.01;
+                    input = document.getElementById('input_time').value;
+                    //console.log(input);
+                    if(time>=input)
+                    {
+                        alert('Time up');
+                        clearInterval(threading);
+                        flag=1;
+                        //document.body.innerHTML = "";
+                    }
+                    else
+                        document.getElementById("time").innerHTML=time.toPrecision(4);
+                    }, 10)
+                    //input = 1000*document.getElementById('input_time').value;
+                    //console.log(input);
+                    //setTimeout("alert('Time Up')", input)
+                    var foo = true;
+                    $(document).on("keydown", function (e) {
+                    console.log(e.which);
+                    if (foo)
+                        foo = update(e.which);
+                    });
+                }
+                
+				function update(key)
 				{
-					if (keydown.h) {
-                        if(enemy.x==0){
+                    if(flag==0)
+                    {
+					if( (key==72 && enemy.x==0) || (key==74 && enemy.x==CANVAS_WIDTH/4) || (key==75 && enemy.x==2*CANVAS_WIDTH/4) || 
+                    (key==76 && enemy.x==3*CANVAS_WIDTH/4)){
                             score++;
                             enemy.x = enemy1.x;
                             enemy1.x = enemy2.x;
-                            enemy2.update();
-                           
-                            
+                            enemy2.update();  
+                            console.log('yes');
+                            draw();
+                            document.getElementById("score").innerHTML=score;
+                            return true;
 						}
-                        else
-                        {
-                            clearInterval(threading);
-                            alert("Wrong tile. Press F5 for New Game");
-                            
+                    else if (key==72 || key==76 || key==74 || key==75) {
+						alert("Wrong tile. Press F5 for New Game");
+                        clearInterval(threading);
+                        document.getElementById("score").innerHTML=score;
+                        score=0;
+                        return false;
                         }
                     }
-                        
-					if (keydown.j) {
-						if(enemy.x==CANVAS_WIDTH/4){
-                            score++;
-                            enemy.x = enemy1.x;
-                            enemy1.x = enemy2.x;
-                            enemy2.update();
-                            draw();
-                            
-						}
-                        else
-                        {
-                            clearInterval(threading);
-                            alert("Wrong tile. Press F5 for New Game");
-                        }
-					}
-                    
-					if (keydown.k) {
-						if(enemy.x==2*CANVAS_WIDTH/4){
-                            score++;
-                            enemy.x = enemy1.x;
-                            enemy1.x = enemy2.x;
-                            enemy2.update();
-                            draw();
-                            
-						}
-                        else
-                        {
-                            clearInterval(threading);
-                            alert("Wrong tile. Press F5 for New Game");
-                        }
-					}
-
-					if (keydown.l) {
-						if(enemy.x==3*CANVAS_WIDTH/4){
-                            score++;
-                            enemy.x = enemy1.x;
-                            enemy1.x = enemy2.x;
-                            enemy2.update();
-                            draw();
-                            
-						}
-                        else
-                        {
-                            clearInterval(threading);
-                            alert("Wrong tile. Press F5 for New Game");
-                        }
-					}
-					time += 1/FPS;
-					document.getElementById("score").innerHTML=score;
-					document.getElementById("time").innerHTML=time.toPrecision(4);
+					
+					//document.getElementById("time").innerHTML=time.toPrecision(4);
 				}
-				var time = 0;
 
 				function draw(){
 					canvas.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -191,16 +171,18 @@
 				<h2>Time:&nbsp; </h2><h2 id="time"></h2> <br><br>
                 <h2>Instructions : </h2><br>
                 <h2 color="#fff", font-size="20px;">
-                    Use "H", "J", "K", "L" on the keyboard <br>for respective columns from left to right<br>where black tile belongs.
+                    Enter time, click on "Start Game" and enjoy the game by using <br>
+                    "H", "J", "K", "L" on the keyboard <br>for respective columns from left to right<br>where black tile of bottom-most row belongs.<br>
+                    Each black tile in the row will indicate <br>the next tile in the row below it.
                 </h2>
                 </div>
-			</div><br>
-            <!-- <div class="row">
+                <br>
+            <div>
 				<center>
-                        <input id="count" placeholder="Enter number of seconds" type="text">
-						<button onclick = update()>Start Game</button>
-				<center>
-            </div> -->
-			<a id="next" href="level2.html"></a>
+                        <input id="input_time" placeholder="Enter number of seconds" type="text">
+						<button type="submit" onclick = "setTime()">Start Game</button>
+				</center>
+            </div>
+			
 		</body>			
 </html>
